@@ -1,0 +1,53 @@
+body {
+  /* remove margins and scroll bars */
+  margin: 0;
+  overflow-y: scroll;
+
+  /* style text */
+  text-align: center;
+  font-size: 12px;
+  font-family: Sans-Serif;
+
+  /* color text */
+  color: #444;
+
+  /* set the background color */
+  background-color: #f0f0f0;
+}
+
+h1 {
+  /* position the heading */
+  width: 100%;
+
+  /* make sure that the heading is drawn on top */
+  z-index: 1;
+}
+
+#container-row {
+  background-color:azure;
+  min-height: 500px;
+}
+
+#scene-container {
+  /* tell our scene container to take up the full page */
+  width: 75%;
+  height: 75%;
+  margin-left: 12.5%;
+  min-height: 500px;
+
+  /*
+    Set the container's background color to the same as the scene's
+    background to prevent flashing on load
+  */
+  background-color: skyblue;
+}
+
+.space-below {
+  margin-top: 5px;
+  margin-bottom: 20px;
+}
+
+.space-above {
+  margin-top: 20px;
+  margin-bottom: 5px;
+}
