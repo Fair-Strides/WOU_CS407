@@ -1,12 +1,12 @@
 // @ts-nocheck
 import {
-    BoxGeometry,
-    Color,
-    Mesh,
-    MeshBasicMaterial,
-    PerspectiveCamera,
-    Scene,
-    WebGLRenderer,
+	BoxGeometry,
+	Color,
+	Mesh,
+	MeshBasicMaterial,
+	PerspectiveCamera,
+	Scene,
+	WebGLRenderer
 } from 'three';
 
 /**
@@ -32,26 +32,26 @@ import {
  * @property {string} startingGeometry.material.color - The color of the material
  */
 let sceneOptions = {
-    animate: false,
-    animateId: null,
-    renderMode: 'solid',
-    container: window,
-    containerWidth: window.innerWidth,
-    containerHeight: window.innerHeight,
-    camera: {
-        fov: 35,
-        aspect: window.innerWidth / window.innerHeight,
-        near: 0.1,
-        far: 100,
-        position: {
-            x: 0,
-            y: 0,
-            z: 10,
-        },
-    },
-    backgroundColor: new Color('gray'),
-    startingGeometry: []
-}
+	animate: false,
+	animateId: null,
+	renderMode: 'solid',
+	container: window,
+	containerWidth: window.innerWidth,
+	containerHeight: window.innerHeight,
+	camera: {
+		fov: 35,
+		aspect: window.innerWidth / window.innerHeight,
+		near: 0.1,
+		far: 100,
+		position: {
+			x: 0,
+			y: 0,
+			z: 10
+		}
+	},
+	backgroundColor: new Color('gray'),
+	startingGeometry: []
+};
 // create a Scene
 let scene = new Scene();
 
@@ -59,112 +59,121 @@ let scene = new Scene();
 let renderer = new WebGLRenderer();
 
 // Create a camera
-let camera = new PerspectiveCamera(sceneOptions.camera.fov, sceneOptions.camera.aspect, sceneOptions.camera.near, sceneOptions.camera.far);
+let camera = new PerspectiveCamera(
+	sceneOptions.camera.fov,
+	sceneOptions.camera.aspect,
+	sceneOptions.camera.near,
+	sceneOptions.camera.far
+);
 
 const resize = () => {
-    renderer.setSize(sceneOptions.containerWidth, sceneOptions.containerHeight);
-    camera.aspect = sceneOptions.containerWidth / sceneOptions.containerHeight;
-    camera.updateProjectionMatrix();
+	renderer.setSize(sceneOptions.containerWidth, sceneOptions.containerHeight);
+	camera.aspect = sceneOptions.containerWidth / sceneOptions.containerHeight;
+	camera.updateProjectionMatrix();
 };
 
 export const animate = (state) => {
-    console.log('Animating', state);
-    sceneOptions.animate = state;
-    if(state === false) {
-        cancelAnimationFrame(sceneOptions.animateId);
-        return;
-    }
+	console.log('Animating', state);
+	sceneOptions.animate = state;
+	if (state === false) {
+		cancelAnimationFrame(sceneOptions.animateId);
+		return;
+	}
 
-    sceneOptions.animateId = requestAnimationFrame(animate);
-    for (const geometry of sceneOptions.startingGeometry) {
-        if (geometry.rotate) {
-            geometry.reference.rotation.x += 0.01;
-            geometry.reference.rotation.y += 0.01;
-        }
-    }
-    renderer.render(scene, camera);
+	sceneOptions.animateId = requestAnimationFrame(animate);
+	for (const geometry of sceneOptions.startingGeometry) {
+		if (geometry.rotate) {
+			geometry.reference.rotation.x += 0.01;
+			geometry.reference.rotation.y += 0.01;
+		}
+	}
+	renderer.render(scene, camera);
 };
 
 export const renderMode = (state) => {
-    console.log('Changing render mode', state);
-    sceneOptions.renderMode = !state ? 'solid' : 'wireframe';
-    const renderState = sceneOptions.renderMode === "solid";
-    for (const geometry of sceneOptions.startingGeometry) {
-        geometry.reference.material.wireframe = !renderState;
-    }
+	console.log('Changing render mode', state);
+	sceneOptions.renderMode = !state ? 'solid' : 'wireframe';
+	const renderState = sceneOptions.renderMode === 'solid';
+	for (const geometry of sceneOptions.startingGeometry) {
+		geometry.reference.material.wireframe = !renderState;
+	}
 
-    renderer.render(scene, camera);
-}
+	renderer.render(scene, camera);
+};
 
 /**
- * 
+ *
  * @param {HTMLElement} el - The canvas element to render the scene to
  * @param {Object} options - Options for the scene
  */
 export const createScene = (el, options = {}) => {
-    /**
-     * @type {HTMLElement} container - The container element for the scene
-     */
-    
-    let container = sceneOptions.container;
+	/**
+	 * @type {HTMLElement} container - The container element for the scene
+	 */
 
-    // Merge the options with the defaults
-    sceneOptions = { ...sceneOptions, ...options };
+	let container = sceneOptions.container;
 
-    if (container !== el) {
-        console.log('Updating container')
-        sceneOptions.container = el;
-        sceneOptions.containerWidth = el.clientWidth;
-        
-        sceneOptions.containerHeight = el.clientHeight;
-        sceneOptions.camera.aspect = el.clientWidth / el.clientHeight;
+	// Merge the options with the defaults
+	sceneOptions = { ...sceneOptions, ...options };
 
-        console.log(sceneOptions);
-    }
+	if (container !== el) {
+		console.log('Updating container');
+		sceneOptions.container = el;
+		sceneOptions.containerWidth = el.clientWidth;
 
-    // Every time we create a new scene, we want to clear the old one
-    scene.clear();
+		sceneOptions.containerHeight = el.clientHeight;
+		sceneOptions.camera.aspect = el.clientWidth / el.clientHeight;
 
-    // Set the background color
-    scene.background = sceneOptions.backgroundColor;
+		console.log(sceneOptions);
+	}
 
-    // every object is initially created at ( 0, 0, 0 )
-    // move the camera back so we can view the scene
-    camera.fov = sceneOptions.camera.fov;
-    camera.aspect = sceneOptions.camera.aspect;
-    camera.near = sceneOptions.camera.near;
-    camera.far = sceneOptions.camera.far;
-    
-    camera.position.set(sceneOptions.camera.position.x, sceneOptions.camera.position.y, sceneOptions.camera.position.z);
+	// Every time we create a new scene, we want to clear the old one
+	scene.clear();
 
-    // For each geometry in the sceneOptions, create a mesh and add it to the scene
-    for (const geometry of sceneOptions.startingGeometry) {
-        // Create a geometry
-        // Then add a material to apply to it
-        const geometryInstance = new geometry.type(...geometry.dimensions);
-        const material = new geometry.material.type({
-            color: geometry.material.color,
-            wireframe: sceneOptions.renderMode === "wireframe",
-            flatShading: geometry.material.flatShading,
-        });
+	// Set the background color
+	scene.background = sceneOptions.backgroundColor;
 
-        // And now put the pieces together
-        geometry.reference = new Mesh(geometryInstance, material);
+	// every object is initially created at ( 0, 0, 0 )
+	// move the camera back so we can view the scene
+	camera.fov = sceneOptions.camera.fov;
+	camera.aspect = sceneOptions.camera.aspect;
+	camera.near = sceneOptions.camera.near;
+	camera.far = sceneOptions.camera.far;
 
-        // add the mesh to the scene
-        scene.add(geometry.reference);
-    }
+	camera.position.set(
+		sceneOptions.camera.position.x,
+		sceneOptions.camera.position.y,
+		sceneOptions.camera.position.z
+	);
 
-    renderer = new WebGLRenderer({ canvas: el });
-    // next, set the renderer to the same size as our container element
-    renderer.setSize(sceneOptions.containerWidth, sceneOptions.containerHeight);
+	// For each geometry in the sceneOptions, create a mesh and add it to the scene
+	for (const geometry of sceneOptions.startingGeometry) {
+		// Create a geometry
+		// Then add a material to apply to it
+		const geometryInstance = new geometry.type(...geometry.dimensions);
+		const material = new geometry.material.type({
+			color: geometry.material.color,
+			wireframe: sceneOptions.renderMode === 'wireframe',
+			flatShading: geometry.material.flatShading
+		});
 
-    // finally, set the pixel ratio so that our scene will look good on HiDPI displays
-    renderer.setPixelRatio(window.devicePixelRatio);
+		// And now put the pieces together
+		geometry.reference = new Mesh(geometryInstance, material);
 
-    // render, or 'create a still image', of the scene
-    renderer.render(scene, camera);
-    resize();
+		// add the mesh to the scene
+		scene.add(geometry.reference);
+	}
 
-    sceneOptions.container.addEventListener('resize', resize);
+	renderer = new WebGLRenderer({ canvas: el });
+	// next, set the renderer to the same size as our container element
+	renderer.setSize(sceneOptions.containerWidth, sceneOptions.containerHeight);
+
+	// finally, set the pixel ratio so that our scene will look good on HiDPI displays
+	renderer.setPixelRatio(window.devicePixelRatio);
+
+	// render, or 'create a still image', of the scene
+	renderer.render(scene, camera);
+	resize();
+
+	sceneOptions.container.addEventListener('resize', resize);
 };

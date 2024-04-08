@@ -4,7 +4,7 @@
 	<a href="/assignments">Assignments</a>
 </nav>
 
-<slot></slot>
+<slot />
 
 <style>
 	.space-below {

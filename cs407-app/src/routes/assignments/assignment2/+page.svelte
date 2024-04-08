@@ -2,13 +2,13 @@
 	/** @type {import('./$types').PageData} */
 	export let data;
 
-	import { onMount } from "svelte";
-	import { createScene, animate, renderMode } from "$lib/scene";
-	import { DodecahedronGeometry, MeshBasicMaterial } from "three";
+	import { onMount } from 'svelte';
+	import { createScene, animate, renderMode } from '$lib/scene';
+	import { DodecahedronGeometry, MeshBasicMaterial } from 'three';
 	let canvas;
 
 	onMount(() => {
-		console.log("Creating scene");
+		console.log('Creating scene');
 		createScene(canvas, {
 			startingGeometry: [
 				{
@@ -21,45 +21,45 @@
 					},
 					rotate: true,
 					reference: null
-				},
+				}
 			],
 			cameraPosition: [0, 0, 30]
 		});
 	});
 
-	let animationState = "Start";
-	let wireframeState = "Show";
+	let animationState = 'Start';
+	let wireframeState = 'Show';
 
 	function toggleAnimation() {
-		if (animationState === "Start") {
-			animationState = "Stop";
+		if (animationState === 'Start') {
+			animationState = 'Stop';
 		} else {
-			animationState = "Start";
+			animationState = 'Start';
 		}
 
-		animate(animationState !== "Start");
+		animate(animationState !== 'Start');
 	}
 
 	function toggleWireframe() {
-		if (wireframeState === "Show") {
-			wireframeState = "Hide";
+		if (wireframeState === 'Show') {
+			wireframeState = 'Hide';
 		} else {
-			wireframeState = "Show";
+			wireframeState = 'Show';
 		}
 
-		renderMode(wireframeState !== "Show");
+		renderMode(wireframeState !== 'Show');
 	}
 </script>
 
 <h1>{data.sections[data.currentPage].title}</h1>
-<hr class="space-below">
+<hr class="space-below" />
 
 <div class="assignmentContent">
 	<div id="buttonSection">
 		<button id="animationButton" class="button" on:click={toggleAnimation}>
 			{animationState} Animation
 		</button>
-		<br>
+		<br />
 		<button id="renderingButton" class="button" on:click={toggleWireframe}>
 			{wireframeState} Wireframe
 		</button>
@@ -70,11 +70,9 @@
 			<canvas bind:this={canvas} id="scene-canvas"></canvas>
 		</div>
 	</div>
-	<div id="assignment-info">
-
-	</div>
+	<div id="assignment-info"></div>
 </div>
-<hr class="space-above">
+<hr class="space-above" />
 
 <style>
 	#buttonSection {
@@ -92,7 +90,7 @@
 		flex-direction: column;
 		justify-content: center;
 	}
-	
+
 	#assignment-info {
 		display: flex;
 		flex-direction: column;

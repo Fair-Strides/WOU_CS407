@@ -2,13 +2,13 @@
 	/** @type {import('./$types').PageData} */
 	export let data;
 
-	import { onMount } from "svelte";
-	import { createScene } from "$lib/scene";
-	import { BoxGeometry, MeshBasicMaterial } from "three";
+	import { onMount } from 'svelte';
+	import { createScene } from '$lib/scene';
+	import { BoxGeometry, MeshBasicMaterial } from 'three';
 	let canvas;
 
 	onMount(() => {
-		console.log("Creating scene");
+		console.log('Creating scene');
 		createScene(canvas, {
 			startingGeometry: [
 				{
@@ -21,7 +21,7 @@
 					},
 					rotate: true,
 					reference: null
-				},
+				}
 			]
 		});
 	});
@@ -31,7 +31,7 @@
 
 <h1>Hello World <span style="text-decoration: line-through;">Cube</span></h1>
 
-<hr class="space-below">
+<hr class="space-below" />
 
 <div id="canvas-row">
 	<div id="scene-container">
@@ -40,8 +40,11 @@
 	</div>
 </div>
 
-<hr class="space-above">
-<p>This was the first assignment in the course of progressively improving skills with JavaScript and Modelling in the browser.</p>
+<hr class="space-above" />
+<p>
+	This was the first assignment in the course of progressively improving skills with JavaScript and
+	Modelling in the browser.
+</p>
 
 <style>
 	#scene-canvas {

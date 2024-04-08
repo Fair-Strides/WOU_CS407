@@ -11,4 +11,4 @@
 	{/each}
 </div>
 
-<slot></slot>
+<slot />
