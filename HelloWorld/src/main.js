@@ -11,9 +11,6 @@ import {
 // Get our scene container
 const container = document.querySelector('#scene-container');
 
-// Get a re-render button
-const reRenderButton = document.querySelector('#re-render');
-
 // create a Scene
 const scene = new Scene();
 
