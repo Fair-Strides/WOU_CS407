@@ -29,12 +29,18 @@
 
 	let animationState = 'Start';
 	let wireframeState = 'Show';
+	let animationButton;
+	let wireframeButton;
 
 	function toggleAnimation() {
 		if (animationState === 'Start') {
 			animationState = 'Stop';
+			animationButton.classList.remove('btn-success');
+			animationButton.classList.add('btn-danger');
 		} else {
 			animationState = 'Start';
+			animationButton.classList.remove('btn-danger');
+			animationButton.classList.add('btn-success');
 		}
 
 		animate(animationState !== 'Start');
@@ -43,8 +49,12 @@
 	function toggleWireframe() {
 		if (wireframeState === 'Show') {
 			wireframeState = 'Hide';
+			wireframeButton.classList.remove('btn-success');
+			wireframeButton.classList.add('btn-danger');
 		} else {
 			wireframeState = 'Show';
+			wireframeButton.classList.remove('btn-danger');
+			wireframeButton.classList.add('btn-success');
 		}
 
 		renderMode(wireframeState !== 'Show');
@@ -54,53 +64,33 @@
 <h1>{data.sections[data.currentPage].title}</h1>
 <hr class="space-below" />
 
-<div class="assignmentContent">
-	<div id="buttonSection">
-		<button id="animationButton" class="button" on:click={toggleAnimation}>
+<div class="assignmentContent row">
+	<div id="buttonSection" class="col-2 mx-2">
+		<button id="animationButton" class="btn btn-success" bind:this={animationButton} on:click={toggleAnimation}>
 			{animationState} Animation
 		</button>
 		<br />
-		<button id="renderingButton" class="button" on:click={toggleWireframe}>
+		<button id="renderingButton" class="btn btn-success" bind:this={wireframeButton} on:click={toggleWireframe}>
 			{wireframeState} Wireframe
 		</button>
 	</div>
-	<div id="canvas-row">
+	<div id="canvas-row" class="col-8">
 		<div id="scene-container">
 			<!-- Our <canvas> will be inserted here -->
 			<canvas bind:this={canvas} id="scene-canvas"></canvas>
 		</div>
 	</div>
-	<div id="assignment-info"></div>
+	<div id="assignment-info" class="col-2">
+		<p>
+			<strong>Assignment 2</strong>
+		</p>
+	</div>
 </div>
 <hr class="space-above" />
 
 <style>
-	#buttonSection {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-	}
-
-	.button {
-		margin: 10px;
-	}
-
-	#canvas-row {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-	}
-
-	#assignment-info {
-		display: flex;
-		flex-direction: column;
-	}
-
 	#scene-canvas {
 		/* tell our scene container to take up the full page */
-		width: 75%;
-		height: 75%;
-		margin-left: 12.5%;
 		min-height: 500px;
 
 		/*
