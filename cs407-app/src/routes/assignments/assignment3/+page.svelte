@@ -6,19 +6,20 @@
 	import { onMount } from 'svelte';
     import { World } from '$lib/World/world.js';
 	import { MeshStandardMaterial, SphereGeometry, TorusGeometry } from 'three';
-	import { color } from 'three/examples/jsm/nodes/Nodes.js';
 
+    /** @type {HTMLCanvasElement} */
     let canvas;
     let hex = "#FFFFFF"
+    /** @type {World|null} */
     let world = null;
     onMount(() => {
         // 1. Create an instance of the World app
         world = new World(canvas, [
         {
-            type: TorusGeometry,
+            type: "TorusGeometry",
             dimensions: [3, 1],
             material: {
-                type: MeshStandardMaterial,
+                type: "MeshStandardMaterial",
                 color: 'green',
                 flatShading: true,
                 wireframe: false
@@ -27,10 +28,10 @@
             reference: null
         },
         {
-            type: SphereGeometry,
+            type: "SphereGeometry",
             dimensions: [3, 10],
             material: {
-                type: MeshStandardMaterial,
+                type: "MeshStandardMaterial",
                 color: 'red',
                 flatShading: true,
                 wireframe: false
@@ -43,8 +44,12 @@
         world.render();
     });
 
+    /**
+     * Toggles the animation state of the world
+     * @param {CustomEvent} event
+     */
     function colorChanged(event) {
-        world.changeLightColor(event.detail.hex);
+        world?.changeLightColor(event.detail.hex);
     }
 
 </script>

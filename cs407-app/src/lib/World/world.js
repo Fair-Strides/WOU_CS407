@@ -18,6 +18,10 @@ let scene;
 let light;
 
 class World {
+  /**
+   * @param {HTMLCanvasElement} container 
+   * @param {import('./components/shape.js').GeometryInfo[]} startingGeometry 
+   */
   constructor(container, startingGeometry = []) {
     camera = createCamera();
     scene = createScene();
@@ -28,6 +32,7 @@ class World {
 
     // For each geometry in the sceneOptions, create a mesh and add it to the scene
 	for (const geometry of startingGeometry) {
+    /** @type {import('three').Mesh} */
 		const mesh = createGeometry(geometry);
         mesh.position.set(...geometry.position);
 
@@ -45,6 +50,10 @@ class World {
     renderer.render(scene, camera);
   }
 
+  /**
+   * 
+   * @param {string} color 
+   */
   changeLightColor(color) {
     console.log(color);
     light.color.set(color);

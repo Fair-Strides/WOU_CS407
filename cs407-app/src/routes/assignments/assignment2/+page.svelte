@@ -5,6 +5,7 @@
 	import { onMount } from 'svelte';
 	import { createScene, animate, renderMode } from '$lib/scene';
 	import { DodecahedronGeometry, MeshBasicMaterial } from 'three';
+	/** @type {HTMLCanvasElement} */
 	let canvas;
 
 	onMount(() => {
@@ -29,7 +30,9 @@
 
 	let animationState = 'Start';
 	let wireframeState = 'Show';
+	/** @type {HTMLButtonElement} */
 	let animationButton;
+	/** @type {HTMLButtonElement} */
 	let wireframeButton;
 
 	function toggleAnimation() {
