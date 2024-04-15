@@ -1,7 +1,5 @@
 <script>
 	import { page } from '$app/stores';
-	/** @type {import('./$types').LayoutData} */
-	export let data;
 </script>
 
 <header>
@@ -11,19 +9,23 @@
 		</a>
 	</div>
 
-	<nav class="col-12">
+	<nav>
 		<svg viewBox="0 0 2 3" aria-hidden="true">
-			<path d="M0,3 L0,3 C0,3 1.5,0 2,0 L2,3 Z" />
+			<path d="M0,0 L1,2 C1.5,3 1.5,3 2,3 L2,0 Z" />
 		</svg>
 		<ul>
-			{#each data.sections as section}
-				<li aria-current={$page.url.pathname.endsWith(section.slug) ? 'page' : undefined}>
-					<a href="/assignments/{section.slug}">{section.title}</a>
-				</li>
-			{/each}
+			<li aria-current={$page.url.pathname === '/' ? 'page' : undefined}>
+				<a href="/">Home</a>
+			</li>
+			<li aria-current={$page.url.pathname === '/about' ? 'page' : undefined}>
+				<a href="/about">About</a>
+			</li>
+			<li aria-current={$page.url.pathname.startsWith('/assignments') ? 'page' : undefined}>
+				<a href="/assignments">Assignments</a>
+			</li>
 		</ul>
 		<svg viewBox="0 0 2 3" aria-hidden="true">
-			<path d="M0,3 L0,0 C0,0 0.5,0 2,3 L2,3 Z" />
+			<path d="M0,0 L0,3 C0.5,3 0.5,3 1,2 L2,0 Z" />
 		</svg>
 	</nav>
 
@@ -34,13 +36,10 @@
 	</div>
 </header>
 
-<hr class="space-below" />
-<slot />
-
 <style>
 	header {
 		display: flex;
-		justify-content: flex-start;
+		justify-content: space-between;
 	}
 
 	.corner {
@@ -64,7 +63,7 @@
 
 	nav {
 		display: flex;
-		/* justify-content: center; */
+		justify-content: center;
 		--background: rgba(255, 255, 255, 0.7);
 	}
 
@@ -84,13 +83,11 @@
 		margin: 0;
 		height: 3em;
 		display: flex;
-		/* justify-content: center; */
+		justify-content: center;
 		align-items: center;
 		list-style: none;
 		background: var(--background);
 		background-size: contain;
-		width: 80%;
-		overflow-x: auto;
 	}
 
 	li {
@@ -121,7 +118,6 @@
 		letter-spacing: 0.1em;
 		text-decoration: none;
 		transition: color 0.2s linear;
-		text-wrap: nowrap;
 	}
 
 	a:hover {

@@ -5,40 +5,67 @@
     import ColorPicker from 'svelte-awesome-color-picker';
 	import { onMount } from 'svelte';
     import { World } from '$lib/World/world.js';
-	import { MeshStandardMaterial, SphereGeometry, TorusGeometry } from 'three';
 
     /** @type {HTMLCanvasElement} */
     let canvas;
     let hex = "#FFFFFF"
+    let hex2 = "#FFFFFF"
     /** @type {World|null} */
     let world = null;
     onMount(() => {
-        // 1. Create an instance of the World app
-        world = new World(canvas, [
-        {
-            type: "TorusGeometry",
-            dimensions: [3, 1],
-            material: {
-                type: "MeshStandardMaterial",
-                color: 'green',
-                flatShading: true,
-                wireframe: false
+
+        // 0. Define our options
+        /**
+         * @type {import('$lib/World/world').WorldOptions}
+         */
+        const worldOptions = {
+            container: canvas,
+            startingGeometry: [{
+                type: "TorusGeometry",
+                dimensions: [3, 1],
+                material: {
+                    type: "MeshStandardMaterial",
+                    color: 'green',
+                    flatShading: true,
+                    wireframe: false
+                },
+                position: [2.5, 5, 1],
+                reference: null
             },
-            position: [2.5, 5, 1],
-            reference: null
-        },
-        {
-            type: "SphereGeometry",
-            dimensions: [3, 10],
-            material: {
-                type: "MeshStandardMaterial",
+            {
+                type: "SphereGeometry",
+                dimensions: [3, 10],
+                material: {
+                    type: "MeshStandardMaterial",
+                    color: 'red',
+                    flatShading: true,
+                    wireframe: false
+                },
+                position: [-2.5, 5, 1],
+                reference: null
+            }],
+            startingLights: [{
+                type: "AmbientLight",
+                color: 'white',
+                intensity: 10,
+                position: [10, 5, 10],
+                view: [0, 5, 0],
+                reference: null
+            },
+            {
+                type: "DirectionalLight",
                 color: 'red',
-                flatShading: true,
-                wireframe: false
-            },
-            position: [-2.5, 5, 1],
-            reference: null
-        }]);
+                intensity: 20,
+                position: [10, 5, 10],
+                view: [0, 5, 0],
+                reference: null
+            }],
+            cameraPosition: [10, 5, 20],
+            cameraView: [0, 5, 0]
+        };
+
+        // 1. Create an instance of the World app
+        world = new World(worldOptions);
 
         // 2. Render the scene
         world.render();
@@ -46,10 +73,11 @@
 
     /**
      * Toggles the animation state of the world
+     * @param {number} index
      * @param {CustomEvent} event
      */
-    function colorChanged(event) {
-        world?.changeLightColor(event.detail.hex);
+    function colorChanged(index, event) {
+        world?.changeLightColor(index, event.detail.hex);
     }
 
 </script>
@@ -59,14 +87,15 @@
 
 <div class="assignmentContent row">
 	<div id="buttonSection" class="col-2 mx-2">
-        <ColorPicker bind:hex on:input={colorChanged} />
-		<!-- <button id="animationButton" class="btn btn-success" bind:this={animationButton} on:click={toggleAnimation}>
-			{animationState} Animation
-		</button>
-		<br />
-		<button id="renderingButton" class="btn btn-success" bind:this={wireframeButton} on:click={toggleWireframe}>
-			{wireframeState} Wireframe
-		</button> -->
+        <h2>Controls</h2>
+        <div class="form-group">
+            <label for="AmbientLightPicker">Ambient Light</label>
+            <ColorPicker bind:hex={hex} on:input={(event) => colorChanged(0, event)} />
+        </div>
+        <div class="form-group">
+            <label for="DirectionalLightPicker">Directional Light</label>
+            <ColorPicker bind:hex={hex2} on:input={(event) => colorChanged(1, event)} />
+        </div>
 	</div>
 	<div id="canvas-row" class="col-8">
 		<div id="scene-container">

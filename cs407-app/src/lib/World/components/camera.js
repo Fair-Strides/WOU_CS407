@@ -1,6 +1,12 @@
 import { PerspectiveCamera } from 'three';
 
-function createCamera() {
+/**
+ * 
+ * @param {[number, number, number]} position 
+ * @param {[number, number, number]} view
+ * @returns 
+ */
+function createCamera(position, view) {
   const camera = new PerspectiveCamera(
     35, // fov = Field Of View
     1, // aspect ratio (dummy value)
@@ -9,7 +15,9 @@ function createCamera() {
   );
 
   // move the camera back so we can view the scene
-  camera.position.set(0, 5, 20);
+  camera.position.set(...position);
+
+  camera.lookAt(...view);
 
   return camera;
 }
