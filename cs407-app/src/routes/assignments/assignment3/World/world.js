@@ -5,6 +5,7 @@ import { createScene } from './components/scene.js';
 
 import { createRenderer } from './systems/renderer.js';
 import { Resizer } from './systems/Resizer.js';
+import { GridHelper, AxesHelper } from 'three';
 
 // These variables are module-scoped: we cannot access them
 // from outside the module
@@ -14,8 +15,12 @@ let camera;
 let renderer;
 /** @type {import('three').Scene} */
 let scene;
-/** @type {import('./components/lights.js').LightTypes[]}*/
+/** @type {import('three').GridHelper} */
+let grid;
+/** @type {import('./components/lights.js').LightTypes[]} */
 let lights = [];
+/** @type {import('./components/shape.js').GeometryInfo[]} */
+let geometry = [];
 
 /**
  * @typedef WorldOptions
@@ -36,6 +41,7 @@ class World {
     cameraPosition = [0, 0, 0],
     cameraView = [0, 0, 0],
   }) {
+    geometry = startingGeometry
     camera = createCamera(cameraPosition, cameraView);
     scene = createScene();
     renderer = createRenderer(container);
@@ -60,6 +66,12 @@ class World {
     scene.add(...lights);
 
     const resizer = new Resizer(container, camera, renderer);
+
+    grid = new GridHelper(25, 25, 'black', 'black');
+    scene.add(grid);
+
+    let axesHelper = new AxesHelper(5);
+    scene.add(axesHelper);
   }
 
   render() {
@@ -72,8 +84,17 @@ class World {
    * @param {string} color 
    */
   changeLightColor(index, color) {
-    console.log(`Light: ${index}: ${color}`);
     lights[index].color.set(color);
+
+    renderer.render(scene, camera);
+  }
+
+  /**
+   * @param {number} index
+   * @param {number} intensity 
+   */
+  changeLightIntensity(index, intensity) {
+    lights[index].intensity = +intensity;
 
     renderer.render(scene, camera);
   }
