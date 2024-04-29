@@ -158,9 +158,9 @@ class World {
   rotateCamera(direction) {
     let angle = 0.01;
     if (direction === 'left') {
-      camera.rotation.y -= angle;
-    } else if (direction === 'right') {
       camera.rotation.y += angle;
+    } else if (direction === 'right') {
+      camera.rotation.y -= angle;
     } else if (direction === 'up') {
       camera.rotation.x += angle;
     } else if (direction === 'down') {

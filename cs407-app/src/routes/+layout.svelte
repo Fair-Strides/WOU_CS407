@@ -16,7 +16,7 @@
 	<hr class="space-above" />
 
 	<footer>
-		<p>visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to learn SvelteKit</p>
+		<p>Visit my <a href="https://github.com/Fair-Strides/WOU_CS407">Github CS407 Repository</a> to see how this is done.</p>
 	</footer>
 </div>
 

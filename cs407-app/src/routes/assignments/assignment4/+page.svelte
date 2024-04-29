@@ -54,22 +54,42 @@
                 event.key === "space" ||
                 (event.key === "w" && event.altKey) ||
                 (event.key === "s" && event.altKey)
-            ) {
+            )   {
                     event.preventDefault();
                 }
             
-            if(event.key === "ArrowUp") world.rotateCamera('up');
-            if(event.key === "ArrowDown") world.rotateCamera('down');
-            if(event.key === "ArrowLeft") world.rotateCamera('left');
-            if(event.key === "ArrowRight") world.rotateCamera('right');
-            if(event.key === "w") world.rotateSun('up');
-            if(event.key === "s") world.rotateSun('down');
-            if(event.key === "a") world.rotateSun('left');
-            if(event.key === "d") world.rotateSun('right');
-            if(event.key === " ") toggleAnimation();
-
-            if(event.key === "w" && event.altKey) world.moveCamera('forward');
-            if(event.key === "s" && event.altKey) world.moveCamera('backward');
+            console.log(event.key, event.altKey);
+            switch (event.key) {
+                case "ArrowUp":
+                    world.rotateCamera('up');
+                    break;
+                case "ArrowDown":
+                    world.rotateCamera('down');
+                    break;
+                case "ArrowLeft":
+                    world.rotateCamera('left');
+                    break;
+                case "ArrowRight":
+                    world.rotateCamera('right');
+                    break;
+                case "w":
+                    if(event.altKey) world.moveCamera('forward');
+                    else world.rotateSun('up');
+                    break;
+                case "s":
+                    if(event.altKey) world.moveCamera('backward');
+                    else world.rotateSun('down');
+                    break;
+                case "a":
+                    world.rotateSun('left');
+                    break;
+                case "d":
+                    world.rotateSun('right');
+                    break;
+                case " ":
+                    toggleAnimation();
+                    break;
+            }
         });
     });
 
