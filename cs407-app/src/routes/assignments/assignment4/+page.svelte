@@ -43,19 +43,33 @@
     
         // 3. Add event listeners
         window.addEventListener('keydown', (event) => {
-            if(event.key === "ArrowUp" || event.key === "ArrowDown" || event.key === "ArrowLeft" || event.key === "ArrowRight" || event.key === "w" || event.key === "s" || event.key === "a" || event.key === "d" || event.key === "space" || (event.key === "w" && event.altKey) || (event.key === "s" && event.altKey)) event.preventDefault();
-            if(event.key === "ArrowUp") rotateCamera('up');
-            if(event.key === "ArrowDown") rotateCamera('down');
-            if(event.key === "ArrowLeft") rotateCamera('left');
-            if(event.key === "ArrowRight") rotateCamera('right');
-            if(event.key === "w") moveCamera('up');
-            if(event.key === "s") moveCamera('down');
-            if(event.key === "a") moveCamera('left');
-            if(event.key === "d") moveCamera('right');
+            if(event.key === "ArrowUp" ||
+                event.key === "ArrowDown" ||
+                event.key === "ArrowLeft" ||
+                event.key === "ArrowRight" ||
+                event.key === "w" ||
+                event.key === "s" ||
+                event.key === "a" ||
+                event.key === "d" ||
+                event.key === "space" ||
+                (event.key === "w" && event.altKey) ||
+                (event.key === "s" && event.altKey)
+            ) {
+                    event.preventDefault();
+                }
+            
+            if(event.key === "ArrowUp") world.rotateCamera('up');
+            if(event.key === "ArrowDown") world.rotateCamera('down');
+            if(event.key === "ArrowLeft") world.rotateCamera('left');
+            if(event.key === "ArrowRight") world.rotateCamera('right');
+            if(event.key === "w") world.rotateSun('up');
+            if(event.key === "s") world.rotateSun('down');
+            if(event.key === "a") world.rotateSun('left');
+            if(event.key === "d") world.rotateSun('right');
             if(event.key === " ") toggleAnimation();
 
-            if(event.key === "w" && event.altKey) moveCamera('forward');
-            if(event.key === "s" && event.altKey) moveCamera('backward');
+            if(event.key === "w" && event.altKey) world.moveCamera('forward');
+            if(event.key === "s" && event.altKey) world.moveCamera('backward');
         });
     });
 
@@ -82,6 +96,11 @@
 	let animationButton;
 
 	function toggleAnimation() {
+        if(!animationButton) {
+            console.log("Nope.");
+            return;
+        }
+
 		if (animationState === 'Start') {
 			animationState = 'Stop';
 			animationButton.classList.remove('btn-success');
@@ -96,22 +115,6 @@
             world.stop();
 		}
 	}
-
-    /**
-     * Rotates the camera
-     * @param {string} direction
-     */
-    function rotateCamera(direction) {
-        world.rotateCamera(direction);
-    }
-
-    /**
-     * Moves the camera
-     * @param {string} direction
-     */
-    function moveCamera(direction) {
-        world.moveCamera(direction);
-    }
 
 </script>
 
@@ -128,7 +131,7 @@
             <input type="range" min="0" max="25" bind:value={ambientIntensity} class="slider" id="ambientIntensity" on:input={(event) => intensityChanged(0, +event.currentTarget.value)}>
         </div>
         <div class="form-group control-section">
-            <button id="animationButton" class="btn btn-success" bind:this={animationButton} on:click={toggleAnimation}>
+            <button id="animationButton" class="btn btn-danger" bind:this={animationButton} on:click={toggleAnimation}>
                 {animationState} Animation
             </button>
         </div>
@@ -141,7 +144,17 @@
 	</div>
 	<div id="assignment-info" class="col-2">
 		<p><strong>Assignment 4</strong></p>
-        
+        <p>This assignment was a first with Vector Math, manual rotations, and moving objects around. The goal was to create a scene with a hiearchical structure of objects.</p>
+        <br />
+        <p>The requirements were:</p>
+        <ul>
+            <li>Create a compound model witha  primary object and several child objects</li>
+            <li>Place the child objects relative to the primary object using vector and matrix math</li>
+            <li>Have interactivity that moves the model, and also the child objects.</li>
+        </ul>
+        <hr />
+        <p><strong>Controls</strong></p>
+        <p>WASD will rotate the Sun (the primary object) if the Canvas has focus; click on it if you don't see any change in activity. Arrow Keys allow you to look around with the camera, as well as move it forward and backward with Alt+W and Alt+S, respectively. Lastly, the spacebar will toggle the animation state of the model.</p>
 	</div>
 </div>
 <hr class="space-above" />

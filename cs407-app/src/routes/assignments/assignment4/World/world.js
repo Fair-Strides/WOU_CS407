@@ -109,6 +109,29 @@ class World {
     loop.stop();
   }
 
+
+  /**
+   * @param {string} direction
+   */
+  rotateSun(direction) {
+    let angle = 0.01;
+    let sun = scene.getObjectByName("Sun");
+
+    if(!sun) return;
+
+    if (direction === 'left') {
+      sun.rotation.y -= angle;
+    } else if (direction === 'right') {
+      sun.rotation.y += angle;
+    } else if (direction === 'up') {
+      sun.rotation.x += angle;
+    } else if (direction === 'down') {
+      sun.rotation.x -= angle;
+    }
+
+    this.render();
+  }
+
   /**
    * @param {number} index
    * @param {string} color 
@@ -128,36 +151,6 @@ class World {
 
     this.render();
   }
-
-
-  // /**
-  //  * 
-  //  * @param {boolean | number} state
-  //  * @returns 
-  //  */
-  // animate( state) {
-  //   console.log('Animating', state);
-  //   animateStatus = state;
-  //   if (state === false) {
-  //     cancelAnimationFrame(animateId);
-  //     return;
-  //   }
-  
-  //   animateId = requestAnimationFrame(this.animate.bind(this));
-  //   let sun = scene.getObjectByName('Sun');
-  //   console.log('Rotating', sun?.name, sun?.children.length);
-  //   for (const geometry of sun?.children ?? []) {
-  //     console.log('Checking', geometry.name);
-  //     for (const planet of geometry.children[0].children) {
-  //       console.log('Checking', planet.name);
-  //       if(planet.name.includes('PlanetMesh')) {
-  //         console.log('Rotating', planet.name);
-  //         rotateAroundOrbit(planet, planet.name);
-  //       }
-  //     }
-  //   }
-  //   this.render();
-  // };
 
   /**
    * @param {string} direction
@@ -195,8 +188,6 @@ class World {
     } else if (direction === 'backward') {
       camera.position.y -= distance;
     }
-
-    console.log('Camera position', camera.position);
 
     this.render();
   }
