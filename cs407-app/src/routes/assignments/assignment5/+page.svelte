@@ -106,6 +106,8 @@
 	}
 
     function toggleGrid() {
+        world.renderGrid(gridState);
+        
 		if (gridState === 'Show') {
 			gridState = 'Hide';
 			gridButton.classList.remove('btn-success');
@@ -115,8 +117,6 @@
 			gridButton.classList.remove('btn-danger');
 			gridButton.classList.add('btn-success');
 		}
-
-		world.renderGrid(gridState);
 	}
 </script>
 

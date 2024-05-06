@@ -26,7 +26,7 @@ let lights = [];
 /** @type {import('./components/shape.js').GeometryInfo[]} */
 let geometry = [];
 let renderMode = 'Show';
-let renderGrid = 'Show';
+let renderGrid = 'Hide';
 /** @type {number | null} */
 let animateId = null;
 /** @type {boolean | number} */
