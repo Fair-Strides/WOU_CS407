@@ -69,7 +69,6 @@ function createPlanet(sun, planetName, orbitRadius, orbitColor, planetRadius, pl
 
   let planetGeo = new SphereGeometry(planetRadius, 32, 16);
   let planetMaterial = new MeshStandardMaterial({color: "#8A8A8A", metalness: 0.8, flatShading: false});
-  // let planetMaterial = new MeshStandardMaterial({color: planetColor, transparent: false, opacity: 0.8, emissive: planetLightColor, emissiveIntensity: 0.9});
   let planetMesh = new Mesh(planetGeo, planetMaterial);
   planetMesh.name = `${planetName}PlanetMesh`;
   group.add(planetMesh);

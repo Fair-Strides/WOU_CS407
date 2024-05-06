@@ -6,6 +6,7 @@ export function load() {
 			{ slug: 'assignment2', title: 'Simple Animation' },
 			{ slug: 'assignment3', title: 'Simple World App with Lighting' },
 			{ slug: 'assignment4', title: 'Scene Hierarchy and Transformations' },
+			{ slug: 'assignment5', title: 'Custom Geometry with Vertex Colors' },
 		]
 	};
 }
