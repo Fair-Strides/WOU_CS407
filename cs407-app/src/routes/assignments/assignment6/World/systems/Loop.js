@@ -15,6 +15,7 @@ class Loop {
     this.renderer = renderer;
     /** @type {Array<Mesh>} */
     this.updatables = [];
+    this.delta = 0;
   }
 
   start() {
@@ -33,12 +34,21 @@ class Loop {
 
   tick() {
     // only call the getDelta function once per frame!
-    const delta = clock.getDelta();
+    this.delta = clock.getDelta();
 
     for (const object of this.updatables) {
       // @ts-ignore
-      object.tick(delta);
+      object.tick(this.delta);
     }
+  }
+
+  /**
+   * 
+   * @returns the current frame rate in frames per second
+   */
+  getFrameRate() {
+    if (this.delta === 0) return 0;
+    return 1 / this.delta;
   }
 }
 

@@ -9,7 +9,7 @@ import { Resizer } from './systems/Resizer.js';
 import { GridHelper, AxesHelper, Mesh } from 'three';
 
 import { OrbitControls } from 'three/examples/jsm/Addons.js';
-import { loadWolfData } from './components/gltfWolf.js';
+import { loadWolfData, playAnimation } from './components/gltfWolf.js';
 
 // These variables are module-scoped: we cannot access them
 // from outside the module
@@ -107,6 +107,7 @@ class World {
     scene.add(wolf);
 
     controls.target.copy(wolf.position);
+    loop.updatables.push(wolf);
   }
 
   render() {
@@ -206,6 +207,63 @@ class World {
     }
 
     this.render();
+  }
+
+  /**
+   * @returns {number}
+   */
+  getFrameRate() {
+    return loop.getFrameRate();
+  }
+
+  /**
+   * @param {string} direction
+   */
+  rotateWolf(direction) {
+    let angle = 0.01;
+    let wolf = scene.getObjectByName('Sketchfab_model');
+    if (!wolf) {
+      return;
+    }
+
+    if (direction === 'left') {
+      wolf.rotation.z += angle;
+    } else if (direction === 'right') {
+      wolf.rotation.z -= angle;
+    }
+
+    this.render();
+  }
+
+  /**
+   * @param {string} direction
+   * @param {boolean} run
+   */
+  moveWolf(direction, run = false) {
+    let distance = 0.1;
+    let wolf = scene.getObjectByName('Sketchfab_model');
+    if (!wolf) {
+      console.log('Wolf not found');
+      return;
+    }
+
+    if (direction === 'forward') {
+      wolf.position.x += distance;
+    } else if (direction === 'backward') {
+      wolf.position.x -= distance;
+    }
+
+    if (run) {
+      playAnimation('run');
+    } else {
+      playAnimation('walk');
+    }
+
+    this.render();
+  }
+
+  idleWolf() {
+    playAnimation('idle');
   }
 }
 

@@ -13,6 +13,10 @@
     let hex3 = "#0000FF";
     let hex4 = "#00FF00";
     let hex5 = "#fff200";
+
+    /** @type {number} */
+    let fps = 0;
+
     /** @type {World|null} */
     let world = null;
     /** @type {number} */
@@ -113,6 +117,31 @@
 
         // 2. Render the scene
         world.start();
+
+        setInterval(() => {
+            fps = world?.getFrameRate() || 0;
+        }, 2000);
+
+        /** @type {HTMLButtonElement} */
+        window.addEventListener('keydown', (event) => {
+            console.log(`Key pressed: ${event.key} Shift: ${event.shiftKey} Ctrl: ${event.ctrlKey} Alt: ${event.altKey}`)
+            if(event.key === 'a' || event.key === 'A') {
+                world?.rotateWolf('left');
+            } else if(event.key === 'd' || event.key === 'D') {
+                world?.rotateWolf('right');
+            } else if(event.key === 'w' || event.key === 'W') {
+                world?.moveWolf('forward', event.shiftKey);
+            } else if(event.key === 's' || event.key === 'S') {
+                world?.moveWolf('backward', event.shiftKey);
+            }
+        });
+
+        window.addEventListener('keyup', (event) => {
+            if(event.key === 'a' || event.key === 'A' || event.key === 'd' || event.key === 'D' ||
+               event.key === 'w' || event.key === 'W' || event.key === 's' || event.key === 'S') {
+                world?.idleWolf();
+            }
+        });
     });
 
     /**
@@ -236,6 +265,7 @@
         </div>
 	</div>
 	<div id="canvas-row" class="col-7">
+        <code>{Math.round(fps)} FPS</code>
 		<div id="scene-container">
 			<!-- Our <canvas> will be inserted here -->
 			<canvas bind:this={canvas} id="scene-canvas"></canvas>
