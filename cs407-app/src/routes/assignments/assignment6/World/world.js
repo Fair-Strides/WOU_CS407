@@ -107,6 +107,7 @@ class World {
     scene.add(wolf);
 
     controls.target.copy(wolf.position);
+    // @ts-expect-error
     loop.updatables.push(wolf);
   }
 
@@ -152,6 +153,7 @@ class World {
 
     /** @type {Mesh} geoObject */
     for (const geoObject of scene.children.filter((obj) => obj instanceof Mesh)) {
+      // @ts-expect-error
       geoObject.material.wireframe = !renderState;
     }
   }
@@ -260,6 +262,38 @@ class World {
     }
 
     this.render();
+  }
+
+  /**
+   * @param {Object.<string>} keys
+   */
+  updateWolf(keys = {}) {
+    let distance = 0.1;
+    let angle = 0.01;
+    let wolf = scene.getObjectByName('Sketchfab_model');
+    if (!wolf) {
+      return;
+    }
+
+    if (keys['w'] || keys['W']) {
+      wolf.position.x += distance;
+    } else if (keys['s'] || keys['S']) {
+      wolf.position.x -= distance;
+    }
+
+    if (keys['a'] || keys['A']) {
+      wolf.rotation.z += angle;
+    } else if (keys['d'] || keys['D']) {
+      wolf.rotation.z -= angle;
+    }
+
+    if(keys['Shift']) {
+      playAnimation('run');
+    } else if(keys['a'] || keys['A'] || keys['d'] || keys['D'] || keys['w'] || keys['W'] || keys['s'] || keys['S']) {
+      playAnimation('walk');
+    } else {
+      playAnimation('idle');
+    }
   }
 
   idleWolf() {

@@ -64,6 +64,8 @@ function setupModel(data) {
  * @param {string} animation 
  */
 function playAnimation(animation) {
+  stopAnimations(animation);
+  
   if(animation === 'run') {
     actionRun.play();
   } else if(animation === 'walk') {
@@ -74,6 +76,29 @@ function playAnimation(animation) {
     actionIdle.play();
   } else if(animation === 'idle2') {
     actionIdle2.play();
+  }
+}
+
+/**
+ * @param {string} animation
+ * @returns {void}
+ */
+function stopAnimations(animation) {
+  if(animation !== 'run') {
+    /** @type {number} */
+    actionRun.stopFading(0.5);
+  }
+  if(animation !== 'walk') {
+    actionWalk.stopFading(0.5);
+  }
+  if(animation !== 'creep') {
+    actionCreep.stopFading(0.5);
+  }
+  if(animation !== 'idle') {
+    actionIdle.stopFading(0.5);
+  }
+  if(animation !== 'idle2') {
+    actionIdle2.stopFading(0.5);
   }
 }
 

@@ -28,8 +28,14 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@codemirror/lang-cpp": "^6.0.2",
+		"@codemirror/lang-javascript": "^6.2.2",
+		"@codemirror/theme-one-dark": "^6.1.2",
+		"@depasquale/three-immersive-controls": "^0.0.15",
 		"bootstrap": "^5.3.3",
+		"codemirror": "^6.0.1",
 		"svelte-awesome-color-picker": "^3.0.6",
+		"svelte-codemirror-editor": "^1.4.0",
 		"three": "^0.163.0"
 	}
 }

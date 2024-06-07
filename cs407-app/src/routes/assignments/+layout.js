@@ -8,6 +8,8 @@ export function load() {
 			{ slug: 'assignment4', title: 'Scene Hierarchy and Transformations' },
 			{ slug: 'assignment5', title: 'Custom Geometry with Vertex Colors' },
 			{ slug: 'assignment6', title: 'Complex GLTF Objects' },
+			{ slug: 'assignment7', title: 'Custom Shading per Vertex' },
+			{ slug: 'assignment8', title: 'Final Project' },
 		]
 	};
 }

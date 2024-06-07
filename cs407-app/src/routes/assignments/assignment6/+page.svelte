@@ -124,16 +124,25 @@
 
         /** @type {HTMLButtonElement} */
         window.addEventListener('keydown', (event) => {
-            console.log(`Key pressed: ${event.key} Shift: ${event.shiftKey} Ctrl: ${event.ctrlKey} Alt: ${event.altKey}`)
-            if(event.key === 'a' || event.key === 'A') {
-                world?.rotateWolf('left');
-            } else if(event.key === 'd' || event.key === 'D') {
-                world?.rotateWolf('right');
-            } else if(event.key === 'w' || event.key === 'W') {
-                world?.moveWolf('forward', event.shiftKey);
-            } else if(event.key === 's' || event.key === 'S') {
-                world?.moveWolf('backward', event.shiftKey);
-            }
+            // @ts-expect-error
+            /** @param {Object.<string>} keys */
+            let keys = {};
+            // @ts-expect-error
+            keys[event.key] = true;
+            world?.updateWolf(keys);
+
+            // if(event.key === 'a' || event.key === 'A') {
+            //     world?.rotateWolf('left');
+            // }
+            // if(event.key === 'd' || event.key === 'D') {
+            //     world?.rotateWolf('right');
+            // }
+            // if(event.key === 'w' || event.key === 'W') {
+            //     world?.moveWolf('forward', event.shiftKey);
+            // }
+            // if(event.key === 's' || event.key === 'S') {
+            //     world?.moveWolf('backward', event.shiftKey);
+            // }
         });
 
         window.addEventListener('keyup', (event) => {
