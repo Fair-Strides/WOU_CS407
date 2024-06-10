@@ -1,17 +1,21 @@
-import { AnimationMixer, LoopOnce, LoopRepeat} from 'three';
+import { AnimationAction, AnimationMixer, LoopOnce, LoopRepeat} from 'three';
 import { GLTFLoader } from 'three/examples/jsm/Addons.js';
 
-/** @type {import('three').AnimationAction} */
+/** @type {AnimationAction} */
 let actionIdle;
-/** @type {import('three').AnimationAction} */
+/** @type {AnimationAction} */
+let actionMove;
+/** @type {AnimationAction} */
 let actionJump;
-/** @type {import('three').AnimationAction} */
+/** @type {AnimationAction} */
 let actionBlock;
-/** @type {import('three').AnimationAction} */
+/** @type {AnimationAction} */
 let actionKick;
-/** @type {import('three').AnimationAction} */
+/** @type {AnimationAction} */
+let actionSlash;
+/** @type {AnimationAction} */
 let actionCrouchIdle;
-/** @type {import('three').AnimationAction} */
+/** @type {AnimationAction} */
 let actionCrouchBlock;
 
 let crouching = false;
@@ -37,14 +41,17 @@ function setupModel(data) {
   // model.position.set(0, 0.69, 0);
 
   const animationIdle = data.animations[0];
+  const animationMove = data.animations[2];
   const animationJump = data.animations[5];
   const animationBlock = data.animations[6];
-  const animationKick = data.animations[10];
   const animationCrouchIdle = data.animations[7];
   const animationCrouchBlock = data.animations[8];
+  const animationKick = data.animations[10];
+  const animationSlash = data.animations[12];
 
   const mixer = new AnimationMixer(model);
   actionIdle = mixer.clipAction(animationIdle);
+  actionMove = mixer.clipAction(animationMove);
   actionCrouchIdle = mixer.clipAction(animationCrouchIdle);
 
   actionJump = mixer.clipAction(animationJump);
@@ -58,6 +65,9 @@ function setupModel(data) {
 
   actionCrouchBlock = mixer.clipAction(animationCrouchBlock);
   actionCrouchBlock.setLoop(LoopOnce, 1);
+
+  actionSlash = mixer.clipAction(animationSlash);
+  actionSlash.setLoop(LoopOnce, 1);
 
   actionIdle.play();
 
@@ -80,12 +90,19 @@ function playPlayerAnimation(animation) {
     case 'idle':
       actionIdle.stop();
       actionCrouchIdle.stop();
-      
+      actionMove.stop();
+
       if (crouching) {
         actionCrouchIdle.play();
       } else {
         actionIdle.play();
       }
+      break;
+    case 'move':
+      actionIdle.stop();
+      actionCrouchIdle.stop();
+
+      actionMove.play();
       break;
     case 'jump':
       actionJump.reset().play();
@@ -99,6 +116,9 @@ function playPlayerAnimation(animation) {
       break;
     case 'kick':
       actionKick.reset().play();
+      break;
+    case 'attack':
+      actionSlash.reset().play();
       break;
     default:
       actionIdle.play();

@@ -123,6 +123,7 @@ void main() {
 
         // 2. Render the scene
         world.start();
+        compileShaders();
 
         setInterval(() => {
             fps = world?.getFrameRate() || 0;

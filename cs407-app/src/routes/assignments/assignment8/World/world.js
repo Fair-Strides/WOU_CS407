@@ -8,6 +8,8 @@ import { loadDoorData } from './components/gltf_Door.js';
 import { loadDroneData } from './components/gltf_Drone.js';
 import { loadHelmetData } from './components/gltf_Helmet.js';
 import { loadWomanData } from './components/gltf_Woman.js';
+import { createCylinder, setFragmentShader, setVertexShader } from './components/shaderObject.js';
+import { createRooms } from './components/rooms.js';
 
 import { Loop } from './systems/Loop.js';
 import { createRenderer } from './systems/renderer.js';
@@ -48,6 +50,8 @@ let animateId = null;
 let animateStatus;
 /** @type {Loop} */
 let loop;
+/** @type {Mesh} */
+let cylinder;
 
 /**
  * @typedef WorldOptions
@@ -95,6 +99,53 @@ class World {
       // loop.updatables.push(mesh);
     }
 
+    // Create a sphere
+    cylinder = createCylinder(1, 5, 32, [0, 0.35, 3]);
+    cylinder.name = 'Cylinder';
+
+    let vertexShaderText = `varying vec2 uvCoords;
+    uniform float xValue;
+    uniform float yValue;
+    uniform float zValue;
+
+    void main() {
+      uvCoords = uv;
+      vec3 newPosition = vec3(xValue, yValue, zValue);
+      gl_Position = projectionMatrix * modelViewMatrix * vec4( position + newPosition, 1.0 );
+    }
+    `;
+
+    let fragmentShaderText = `precision mediump float;
+    varying vec2 uvCoords;
+
+    uniform vec3 uvColor;
+
+    void main() {
+      float lineThickness = 0.003;
+      float lineFrequency = 9.0;
+      
+      // Calculate the distance from the top-left corner to the bottom-right corner
+      float diagonalDistance = length(uvCoords - vec2(0.5, 0.5));
+      
+      float remainder = mod(diagonalDistance, 1.0 / lineFrequency);
+
+      float distanceToLine = min(remainder, 1.0 / lineFrequency - remainder);
+      float alpha = 1.0 - smoothstep(0.0, lineThickness, distanceToLine);
+
+      if(remainder < lineThickness || remainder > (1.0 / lineFrequency) - lineThickness) {
+        gl_FragColor = vec4( uvColor, alpha );
+      } else if(remainder < 2.0 * lineThickness || remainder > (2.0 / lineFrequency) - 2.0 * lineThickness) {
+        gl_FragColor = vec4( uvColor, alpha );
+      } else if(remainder < 3.0 * lineThickness || remainder > (3.0 / lineFrequency) - 3.0 * lineThickness) {
+        gl_FragColor = vec4( uvColor, alpha );
+      } else {  
+        gl_FragColor = vec4( 0.0, 0.0, 0.0, 0.0 );
+      }
+    }`;
+
+    setVertexShader(cylinder, vertexShaderText);
+    setFragmentShader(cylinder, fragmentShaderText);
+
     let floorGeometry = new PlaneGeometry( 2000, 2000, 100, 100 );
     floorGeometry.rotateX( - Math.PI / 2 );
     let floorMaterial = new MeshStandardMaterial( { color: 0x808080, metalness: 0.75, roughness: 0.25 });
@@ -111,8 +162,12 @@ class World {
 
     const resizer = new Resizer(container, camera, renderer);
 
+    // create the rooms
+    const rooms = createRooms();
+    scene.add(rooms);
+
     // create a grid
-    grid = new GridHelper(25, 25, 'white', 'white');
+    grid = new GridHelper(250, 250, 'white', 'white');
     grid.name = 'Grid';
     scene.add(grid);
 
@@ -139,16 +194,17 @@ class World {
     const door = await loadDoorData();
     scene.add(door);
     door.scale.set(0.0075, 0.0075, 0.0075);
-    door.position.set(0, 0, 5);
+    door.position.set(-5, 0, 0);
 
     const crate = await loadCrateData();
     scene.add(crate);
-    crate.position.set(0, 0.35, 0);
+    crate.position.set(0, 0.35, 3);
 
     const drone = await loadDroneData();
     scene.add(drone);
     drone.scale.set(0.005, 0.005, 0.005);
-    drone.position.set(5, 1.88, 0);
+    drone.position.set(-13, 1.88, 0);
+    drone.rotation.set(-Math.PI / 2, Math.PI / 6, Math.PI / 2);
 
     const woman = await loadWomanData();
     scene.add(woman);
@@ -165,6 +221,9 @@ class World {
     // woman.add(camera);
     // camera.position.set(0, 0, -0.5);
     // camera.lookAt(woman);
+    loop.updatables.push(crate);
+    loop.updatables.push(drone);
+    loop.updatables.push(door);
     loop.updatables.push(woman);
 
     // controls = new PlayerControls(camera, woman, renderer.domElement);
@@ -173,7 +232,7 @@ class World {
     // };
 
     // loop.updatables.push(controls);
-    controls = new Controls(camera, renderer.domElement, floorMesh, woman);
+    controls = new Controls(scene, camera, renderer.domElement, floorMesh, crate, cylinder, door, drone, woman);
     scene.add(controls.controls.getObject());
     loop.updatables.push(controls.controls);
   }

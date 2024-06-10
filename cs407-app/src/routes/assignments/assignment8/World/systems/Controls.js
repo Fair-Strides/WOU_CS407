@@ -1,8 +1,13 @@
 import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
 import { PerspectiveCamera, Raycaster, Vector3 } from 'three';
 import { playPlayerAnimation, toggleCrouching } from '../components/gltf_Woman';
+import { playCrateAnimation } from '../components/gltf_Crate';
+import { playDoorAnimation } from '../components/gltf_Door';
+import { toggleInScene } from '../components/shaderObject';
+import { Mesh, Scene } from 'three';
+import { playDroneAnimation } from '../components/gltf_Drone';
 
-/** @type {import('three').Mesh} */
+/** @type {Mesh} */
 let floorMesh;
 
 /** @type {Raycaster} */
@@ -16,19 +21,40 @@ let canJump = false;
 const velocity = new Vector3();
 const direction = new Vector3();
 const rotation = new Vector3();
-/** @type {import('three').Mesh} */
+/** @type {Mesh} */
 let playerModel;
+/** @type {Mesh} */
+let crateModel;
+/** @type {Mesh} */
+let doorModel;
+/** @type {Mesh} */
+let droneModel;
+/** @type {Mesh} */
+let crateModelCylinder;
+/** @type {Scene}  */
+let scene;
 
 class Controls {
     /**
+     * @param {Scene} myScene
      * @param {PerspectiveCamera} camera
      * @param {HTMLElement} container
-     * @param {import('three').Mesh} floor
-     * @param {import('three').Mesh} playerMesh
+     * @param {Mesh} floor
+     * @param {Mesh} crateMesh
+     * @param {Mesh} crateCylinder
+     * @param {Mesh} doorMesh
+     * @param {Mesh} droneMesh
+     * @param {Mesh} playerMesh
      */
-    constructor(camera, container, floor, playerMesh) {
+    constructor(myScene, camera, container, floor, crateMesh, crateCylinder, doorMesh, droneMesh, playerMesh) {
+    scene = myScene;
     floorMesh = floor;
-    playerModel = playerModel;
+    playerModel = playerMesh;
+    crateModel = crateMesh;
+    crateModelCylinder = crateCylinder;
+    doorModel = doorMesh;
+    droneModel = droneMesh;
+
     this.controls = new PointerLockControls(camera, container);
     this.controls.tick = (delta) => {
       if ( this.controls.isLocked === true ) {
@@ -47,10 +73,31 @@ class Controls {
         this.updateDirection();
         this.updateVelocity(delta);
         this.updateControls(delta);
-        this.updatePlayerPosition(delta);
-        this.updateCameraPosition();
-        this.updatePlayerRotation();
-        // this.updateControls(delta);
+        // this.updateCameraPosition();
+
+        // Calculate the position in front of the camera
+        const distanceInFrontOfCamera = 1.5; // Change this to the desired distance
+        const distanceFromCameraToFloor = this.controls.getObject().position.distanceTo(floorMesh.position);
+        const cameraDirection = new Vector3();
+        this.controls.getDirection(cameraDirection);
+        const playerPosition = new Vector3().copy(this.controls.getObject().position).add(cameraDirection.multiplyScalar(distanceInFrontOfCamera));
+        playerPosition.y = Math.max(0, playerPosition.y - Math.min(1.5, distanceFromCameraToFloor)); // Set the playerModel's position
+
+        // Set the playerModel's position
+        playerModel.position.lerp(playerPosition, 0.1);
+
+        // Make the playerModel face the same direction as the camera
+        let playerRotationX = (Math.PI / 2) - -this.controls.getObject().rotation.x;
+        if(playerRotationX > (1.5 * Math.PI)) playerRotationX -= 2 * Math.PI;
+        else if(playerRotationX > (0.5 * Math.PI)) playerRotationX = -0.5 * Math.PI;
+
+        playerModel.rotation.x = playerRotationX;
+
+        if ( moveForward || moveBackward || moveLeft || moveRight ) {
+            playPlayerAnimation('move');
+        } else {
+            playPlayerAnimation('idle');
+        }
 
         if ( this.controls.getObject().position.y < 2.5 ) {
           velocity.y = 0;
@@ -58,8 +105,6 @@ class Controls {
 
           canJump = true;
         }
-
-        rotation.set(this.controls.getObject().rotation.x, this.controls.getObject().rotation.y, this.controls.getObject().rotation.z);
       }
     };
 
@@ -83,7 +128,6 @@ class Controls {
      */
     onKeyDown( event ) {
         switch ( event.code ) {
-  
           case 'ArrowUp':
           case 'KeyW':
             moveForward = true;
@@ -115,17 +159,40 @@ class Controls {
   
           case 'KeyC':
             toggleCrouching();
+            // playPlayerAnimation('idle');
             break;
   
           case 'KeyK':
             playPlayerAnimation('kick');
+
+            // Check if the player is close to the crate
+            const playerPosition = new Vector3();
+            const otherPosition = new Vector3();
+            const distanceBetweenPlayerAndCrate = playerModel.getWorldPosition(playerPosition).distanceTo(crateModel.getWorldPosition(otherPosition));
+            const distanceBetweenPlayerAndDoor = playerModel.getWorldPosition(playerPosition).distanceTo(doorModel.getWorldPosition(otherPosition));
+            
+            if(distanceBetweenPlayerAndCrate < 2) {
+                playCrateAnimation('open');
+                toggleInScene(scene, crateModelCylinder);
+            }
+            if(distanceBetweenPlayerAndDoor < 2) {
+                playDoorAnimation('open');
+            }
             break;
         
+          case 'KeyX':
+            playPlayerAnimation('attack');
+            playDroneAnimation('dodge');
+            break;
+
           case 'KeyB':
             playPlayerAnimation('block');
             break;
+        
+          case 'KeyF':
+            playDroneAnimation('fire');
+            break;
         }
-
     };
   
     /**
@@ -172,8 +239,8 @@ class Controls {
      * @param {number} delta
      */
     updateVelocity(delta) {
-        if (moveForward || moveBackward) velocity.z -= direction.z * 40.0 * delta;
-        if (moveLeft || moveRight) velocity.x -= direction.x * 40.0 * delta;
+        if (moveForward || moveBackward) velocity.z -= direction.z * 200.0 * delta;
+        if (moveLeft || moveRight) velocity.x -= direction.x * 200.0 * delta;
         if (onObject === true) {
             velocity.y = Math.max(0, velocity.y);
             canJump = true;
@@ -197,17 +264,12 @@ class Controls {
         this.controls.getObject().position.copy(cameraPosition);
     }
     
-    updatePlayerRotation() {
-        playerModel.rotation.x = -Math.PI / 2 - (this.controls.getObject().rotation.x - rotation.x);
-        playerModel.rotation.z = 0.0 - ((-this.controls.getObject().rotation.z - rotation.z));
-    }
-    
     /**
      * @param {number} delta
      */
     updateControls(delta) {
         this.controls.moveRight(-velocity.x * delta);
-        this.controls.moveForward(-velocity.z * delta);
+        this.controls.moveForward(velocity.z * delta);
         this.controls.getObject().position.y += velocity.y * delta;
     }
 }

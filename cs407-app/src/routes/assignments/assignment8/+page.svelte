@@ -148,6 +148,13 @@
 <hr class="space-below" />
 
 <div class="assignmentContent row">
+    <div id="canvas-row" class="col-12">
+        <code>{Math.round(fps)} FPS</code>
+		<div id="scene-container">
+			<!-- Our <canvas> will be inserted here -->
+			<canvas bind:this={canvas} id="scene-canvas" tabindex="0"></canvas>
+		</div>
+	</div>
 	<div id="buttonSection" class="col-2 mx-2">
         <h2><strong>Controls</strong></h2>
         <div class="form-group control-section">
@@ -180,13 +187,6 @@
             </button>
         </div>
 	</div>
-	<div id="canvas-row" class="col-7">
-        <code>{Math.round(fps)} FPS</code>
-		<div id="scene-container">
-			<!-- Our <canvas> will be inserted here -->
-			<canvas bind:this={canvas} id="scene-canvas" tabindex="0"></canvas>
-		</div>
-	</div>
 	<div id="assignment-info" class="col-2">
 		<p><strong>Assignment 7</strong></p>
         <p>This assignment was an exercise in doing something cool with vertex and fragment shaders</p>
@@ -215,7 +215,8 @@
 			Set the container's background color to the same as the scene's
 			background to prevent flashing on load
 		*/
-		background-color: skyblue;
+		/* background-color: skyblue; */
+        background-color:transparent;
 	}
 
     .control-label {

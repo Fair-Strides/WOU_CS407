@@ -1,7 +1,16 @@
-import { AnimationMixer} from 'three';
+import { AnimationMixer, LoopOnce} from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
-let actionIdle = null;
+/** @type {import('three').AnimationAction} */
+let actionAttack;
+/** @type {import('three').AnimationAction} */
+let actionDodgeLeft;
+/** @type {import('three').AnimationAction} */
+let actionDodgeRight;
+/** @type {import('three').AnimationAction} */
+let actionFire;
+/** @type {import('three').AnimationAction} */
+let actionIdle;
 
 async function loadDroneData() {
   const loader = new GLTFLoader();
@@ -24,12 +33,28 @@ async function loadDroneData() {
 function setupModel(data) {
   const model = data.scene.children[0];
   // model.position.set(0, 0.69, 0);
-
-  const animationIdle = data.animations[0];
+  
+  const animationAttack = data.animations[0];
+  const animationDodgeLeft = data.animations[1];
+  const animationDodgeRight = data.animations[2];
+  const animationFire = data.animations[3];
+  const animationIdle = data.animations[4];
 
   const mixer = new AnimationMixer(model);
-  actionIdle = mixer.clipAction(animationIdle);
+  actionAttack = mixer.clipAction(animationAttack);
+  actionAttack.setLoop(LoopOnce, 1);
+
+  actionDodgeLeft = mixer.clipAction(animationDodgeLeft);
+  actionDodgeLeft.setLoop(LoopOnce, 1);
+
+  actionDodgeRight = mixer.clipAction(animationDodgeRight);
+  actionDodgeRight.setLoop(LoopOnce, 1);
   
+  actionFire = mixer.clipAction(animationFire);
+  actionFire.setLoop(LoopOnce, 4);
+
+  actionIdle = mixer.clipAction(animationIdle);
+  actionIdle.play();
 
   /**
    * tick: (delta: number) => void
@@ -45,14 +70,34 @@ function setupModel(data) {
  * 
  * @param {string} animation 
  */
-function playAnimation(animation) {
+function playDroneAnimation(animation) {
+  switch(animation) {
+    case 'idle':
+      actionIdle.play();
+      break;
+    case 'dodge':
+      const choice = Math.round(Math.random());
+      if(choice === 0) {
+        actionDodgeLeft.reset().play();
+      } else {
+        actionDodgeRight.reset().play();
+      }
+      break;
+    case 'attack':
+      actionAttack.reset().play();
+      break;
+    case 'fire':
+      actionFire.reset().play();
+      break;
+  }
+
 }
 
 /**
  * @param {string} animation
  * @returns {void}
  */
-function stopAnimations(animation) {
+function stopDoneAnimations(animation) {
 }
 
-export { loadDroneData };
+export { loadDroneData, playDroneAnimation, stopDoneAnimations };

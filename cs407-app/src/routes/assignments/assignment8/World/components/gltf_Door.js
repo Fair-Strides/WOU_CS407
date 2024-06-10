@@ -1,5 +1,8 @@
-import { AnimationMixer} from 'three';
+import { AnimationAction, AnimationMixer, LoopOnce} from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+
+/** @type {AnimationAction} */
+let actionOpen;
 
 async function loadDoorData() {
   const loader = new GLTFLoader();
@@ -23,12 +26,11 @@ function setupModel(data) {
   const model = data.scene.children[0];
   // model.position.set(0, 0.69, 0);
 
-  // const animationRun = data.animations[0];
+  const animationOpen = data.animations[0];
 
   const mixer = new AnimationMixer(model);
-  // actionRun = mixer.clipAction(animationRun);
-
-  // actionIdle.play();
+  actionOpen = mixer.clipAction(animationOpen);
+  actionOpen.setLoop(LoopOnce, 1);
 
   /**
    * tick: (delta: number) => void
@@ -44,14 +46,22 @@ function setupModel(data) {
  * 
  * @param {string} animation 
  */
-function playAnimation(animation) {
+function playDoorAnimation(animation) {
+  switch (animation) {
+    case 'open':
+      actionOpen.reset().play();
+      break;
+    default:
+      actionOpen.stop();
+      break;
+  }
 }
 
 /**
  * @param {string} animation
  * @returns {void}
  */
-function stopAnimations(animation) {
+function stopDoorAnimations(animation) {
 }
 
-export { loadDoorData };
+export { loadDoorData, playDoorAnimation, stopDoorAnimations};
