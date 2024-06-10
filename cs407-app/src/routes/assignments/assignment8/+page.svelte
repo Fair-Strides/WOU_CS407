@@ -155,7 +155,7 @@
 			<canvas bind:this={canvas} id="scene-canvas" tabindex="0"></canvas>
 		</div>
 	</div>
-	<div id="buttonSection" class="col-2 mx-2">
+	<div id="buttonSection" class="col-3 mx-2">
         <h2><strong>Controls</strong></h2>
         <div class="form-group control-section">
             <label for="AmbientLightPicker">Ambient Light</label>
@@ -187,15 +187,21 @@
             </button>
         </div>
 	</div>
-	<div id="assignment-info" class="col-2">
-		<p><strong>Assignment 7</strong></p>
-        <p>This assignment was an exercise in doing something cool with vertex and fragment shaders</p>
+	<div id="assignment-info" class="col-5 offset-2">
+		<p><strong>Final Project</strong></p>
+        <p>This assignment was an exercise in synthesizing what we've learned into one last project.</p>
         <br />
-        <p>The requirements were:</p>
-        <ul>            
-            <li>Write your own vertex and fragment shaders to do something interesting. Feel free to find some inspiration online, but you'll need to build it into something you can claim as your own. Remember to attribute where you got the idea or code samples from, if that's what you did.</li>
-            <li>Include user interaction of some kind that sends uniforms or attributes to your custom shader.</li>
-            <li>Include more than one object in your scene, but only have your shaders applied to one of those objects. This will enable you to see how different "materials" (and thus shaders) are used for different objects. i.e. demonstrate that shaders can be applied per object, where at least one of those objects is rendered with your shaders.</li>
+        <p>Controls:</p>
+        <ul>
+            <li>Click into the canvas to begin using it. Moving the mouse will make the camera look around.</li>
+            <li>Escape will exit the canvas focus, allowing you to interact with the rest of the page.</li>
+            <li>WASD will move the character.</li>
+            <li>Spacebar will make the character jump.</li>
+            <li>K will make the character kick. This can interact with objects in the scene.</li>
+            <li>F will make the drone in Room 2 fire.</li>
+            <li>X will make the character attack, and the drone dodge randomly.</li>
+            <li>C will toggle the character crouching.</li>
+            <li>B will make the character block.</li>
         </ul>
         <hr />
         <p>For the axes: X (red), Y (green) and Z (blue)</p>
